@@ -1,0 +1,8 @@
+export const baseUrl = "http://localhost:5000";
+export const teacherBaseUrl = `${baseUrl}/api/teacher`;
+export const assignmentBaseUrl = `${baseUrl}/api/assignment`;
+export const studentBaseUrl = `${baseUrl}/api/student`;
+export const submissionBaseUrl = `${baseUrl}/api/submission`;
+export const authBaseUrl = `${baseUrl}/api/auth`;
+export const similarityBaseUrl = `${baseUrl}/api/similarity`;
+export const adminBaseUrl = `${baseUrl}/api/admin`;
