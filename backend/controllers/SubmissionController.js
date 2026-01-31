@@ -37,7 +37,7 @@ export const createSubmission = async (req, res) => {
     //   }
     // });
     const response = await axios.post(
-  'https://copycatch-py-backend.onrender.com/upload/',
+  'https://copycatch-py-backend.onrender.com/upload',
   {
     file_url: file_url,
     submission_id: submission_id,
@@ -46,8 +46,9 @@ export const createSubmission = async (req, res) => {
   {
     headers: {
       'Content-Type': 'application/json'
-    }
-  }
+    },
+    timeout:90000 // Fixing The Call To Python Backend Issue (To Tackle The Cold Start Due to OnRender)
+  },
 );
     console.log(" Return From Pythin Backend " , file_url ,submission_id , assignmentId);
     console.log(response.data);
