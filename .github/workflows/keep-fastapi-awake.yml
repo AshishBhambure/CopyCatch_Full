@@ -1,0 +1,14 @@
+name: Keep FastAPI Awake
+
+on:
+  schedule:
+    - cron: "*/2 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping FastAPI root endpoint
+        run: |
+          curl -s https://copycatch-py-backend.onrender.com/
