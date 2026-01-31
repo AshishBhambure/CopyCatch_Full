@@ -29,7 +29,7 @@ export const createSubmission = async (req, res) => {
     // ======================HARDCODED ALERT ===============================================================
     try {
       console.log("Sending File to Python Backend")
-    // const response = await axios.post('http://127.0.0.1:8000/upload/', null, {
+    // const response = await axios.post('https://copycatch-py-backend.onrender.com/upload/', null, {
     //   params: {
     //     file_url: file_url,
     //     submission_id: submission_id,
@@ -37,7 +37,7 @@ export const createSubmission = async (req, res) => {
     //   }
     // });
     const response = await axios.post(
-  'http://127.0.0.1:8000/upload/',
+  'https://copycatch-py-backend.onrender.com/upload/',
   {
     file_url: file_url,
     submission_id: submission_id,

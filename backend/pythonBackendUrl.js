@@ -1,1 +1,1 @@
-export const pythonBackendUrl = "http://127.0.0.1:8000/upload";
+export const pythonBackendUrl = "https://copycatch-py-backend.onrender.com/upload";

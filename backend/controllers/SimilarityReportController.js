@@ -36,7 +36,7 @@ const similarityReportCollection = db.collection("SimilarityReport");
 //   try { 
 //     let { submissionId } = req.params;
 //       // ======================HARDCODED ALERT ===============================================================
-//     let pythonBackendUrl  = "http://127.0.0.1:8000/get_similarity_report";
+//     let pythonBackendUrl  = "https://copycatch-py-backend.onrender.com/get_similarity_report";
 //     let response = await axios.get(`${pythonBackendUrl}/${submissionId}`);
 //     console.log("Response from Python backend:", response.data);  
 //     let report = response.data;
@@ -59,7 +59,7 @@ export const getSimilarityReportBySubmission = async (req, res) => {
     const { submissionId } = req.params;
 
     // 1) CALL PYTHON BACKEND
-    const pythonBackendUrl = "http://127.0.0.1:8000/get_similarity_report";
+    const pythonBackendUrl = "https://copycatch-py-backend.onrender.com/get_similarity_report";
     const response = await axios.get(`${pythonBackendUrl}/${submissionId}`);
 
     let report = response.data;
@@ -94,7 +94,7 @@ export const getSimilarityReportBySubmission = async (req, res) => {
 // export const getEnhancedSimilarityReport = async (req, res) => {
 //   try {
 //     const { submissionId } = req.params;
-//     let pythonBackendUrl  = "http://127.0.0.1:8000/get_similarity_report";
+//     let pythonBackendUrl  = "https://copycatch-py-backend.onrender.com/get_similarity_report";
 
 //     // Call Python backend for similarity
 //     const response = await axios.get(`${pythonBackendUrl}/${submissionId}`);
@@ -144,7 +144,7 @@ export const getSimilarityReport = async (req, res) => {
     const { submissionId } = req.params;
 
     // 🔹 1. Call Python FastAPI to get similarity report
-    const pythonUrl = `http://127.0.0.1:8000/get_similarity_report/${submissionId}`;
+    const pythonUrl = `https://copycatch-py-backend.onrender.com/get_similarity_report/${submissionId}`;
     const { data: report } = await axios.get(pythonUrl);
 
     if (!report) {
