@@ -1,5 +1,5 @@
-export const baseUrl = "http://localhost:5000";
-// export const baseUrl = "https://copycatch-full.onrender.com";
+// export const baseUrl = "http://localhost:5000";
+export const baseUrl = "https://copycatch-full.onrender.com";
 export const teacherBaseUrl = `${baseUrl}/api/teacher`;
 export const assignmentBaseUrl = `${baseUrl}/api/assignment`;
 export const studentBaseUrl = `${baseUrl}/api/student`;
