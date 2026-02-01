@@ -59,8 +59,10 @@ export const getSimilarityReportBySubmission = async (req, res) => {
     const { submissionId } = req.params;
 
     // 1) CALL PYTHON BACKEND
+    console.log("Call IN Python Backend For Fetching Similarity Report ")
     const pythonBackendUrl = "https://copycatch-py-backend.onrender.com/get_similarity_report";
-    const response = await axios.get(`${pythonBackendUrl}/${submissionId}`);
+    const response = await axios.get(`${pythonBackendUrl}/${submissionId}`,{timeout:120000});
+    console.log(" Return From Python Backend ");
 
     let report = response.data;
     if (!report) {
