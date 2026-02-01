@@ -41,6 +41,7 @@
 // // module.exports = mailSender;
 
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 dotenv.config();
 export const mailSender = async (email, title, body) => {
