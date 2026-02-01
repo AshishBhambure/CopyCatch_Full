@@ -1,237 +1,313 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, Mail, Lock, UserCircle, Phone, CreditCard, UserPlus } from "lucide-react";
+import {
+  Shield,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { baseUrl } from "../../services/baseUrl";
-
+import { toast } from "react-toastify";
 
 export default function SignupForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
+    name: "",
     password: "",
     mobile: "",
     prn: "",
     role: "",
   });
 
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+
+  const emailRegex =
+    /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+@walchandsangli\.ac\.in$/;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+  /* ---------------- SEND OTP ---------------- */
+  const handleSendOtp = async () => {
+    if (!emailRegex.test(formData.email)) {
+      setMessage(
+        "Email must be firstname.lastname@walchandsangli.ac.in"
+      );
+      return;
+    }
 
     try {
-      if (!formData.role) {
-        setMessage("Please select a role.");
-        setLoading(false);
-        return;
-      }
+      setLoading(true);
+      setMessage("");
 
-      // API endpoint
-      const apiUrl = `${baseUrl}/api/${formData.role}/signup`;
-      console.log("API URL",  apiUrl)
-
-      const res = await axios.post(apiUrl, formData);
-      setMessage(res.data.message || "Signup successful!");
-
-      // Clear form
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        mobile: "",
-        prn: "",
-        role: "",
+      var toastId = toast.loading("Please wait, sending OTP...");
+      await axios.post(`${baseUrl}/api/auth/sendOtp`, {
+        email: formData.email,
       });
+      toast.dismiss(toastId);
+      toast.success("OTP sent successfully!");
+      setOtpSent(true);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data?.message,"Error while sending OTP");
+    } finally {
+      setLoading(false);
+      toast.dismiss(toastId)
+    }
+  };
 
+  /* ---------------- VERIFY OTP ---------------- */
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      toast.warn("OTP must be 6 digits");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post(
+        `${baseUrl}/api/auth/verifyOtp`,
+        {
+          email: formData.email,
+          otp,
+        }
+      );
+
+      if (res?.data?.success) {
+        setEmailVerified(true);
+        toast.success("Email verified successfully");
+      }
+    } catch (err) {
+      toast.error("Invalid OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ---------------- SIGNUP ---------------- */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.role) {
+      toast.warn("Please select a role");
+      return;
+    }
+
+    if (formData.password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const apiUrl = `${baseUrl}/api/${formData.role}/signup`;
+      const res = await axios.post(apiUrl, formData);
+      toast.success("Signup successful!");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      console.error("Signup Error:", err.response?.data || err.message);
-      setMessage(err.response?.data?.message || "Error occurred during signup");
+      console.log(err);
+      toast.error(
+        err?.response?.data?.error ||
+          "Error occurred during signup"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-   <div className="min-h-screen flex items-center justify-center bg-gray-900 p-6 relative">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-purple-700 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-72 h-72 bg-indigo-700 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
-      </div>
-
-      {/* Signup Card */}
-      <div className="relative bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-xl border border-gray-700 p-8 w-full max-w-md hover:shadow-2xl transition-all duration-300 text-gray-100">
-        {/* Logo/Brand */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-6">
+      <div className="bg-gray-800/70 backdrop-blur-md rounded-2xl p-8 w-full max-w-md text-gray-100">
+        <div className="flex flex-col items-center mb-6">
+          <Shield className="w-10 h-10 text-indigo-400" />
+          <h2 className="text-2xl font-bold mt-2">
             Create Account
           </h2>
-          <p className="text-gray-300 text-sm mt-2">Join CopyCatch today</p>
         </div>
 
-        {/* Error/Success Message */}
-        {message && (
-          <div
-            className={`mb-6 p-4 rounded-xl text-sm font-medium ${
-              message.toLowerCase().includes("error") || message.includes("select")
-                ? "bg-red-800/30 text-red-400 border border-red-700"
-                : "bg-green-800/30 text-green-400 border border-green-700"
-            }`}
-          >
-            {message}
-          </div>
-        )}
-
-        {/* Signup Form */}
+        {/* ---------------- EMAIL SECTION ---------------- */}
         <div className="space-y-4">
-          {/* Full Name */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+          <div>
+            <label className="pl-2 font-semibold">
+              College Email
+            </label>
             <div className="relative">
-              <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                name="name"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 placeholder-gray-500"
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
               <input
                 type="email"
                 name="email"
-                placeholder="your.email@college.edu"
                 value={formData.email}
                 onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 placeholder-gray-500"
+                disabled={otpSent}
+                placeholder="firstname.lastname@walchandsangli.ac.in"
+                className="w-full pl-11 py-3 rounded-xl bg-gray-900 border border-gray-600"
               />
             </div>
           </div>
 
-          {/* PRN Number */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">PRN Number</label>
-            <div className="relative">
-              <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                name="prn"
-                placeholder="PRN123456"
-                value={formData.prn}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 placeholder-gray-500"
-              />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="password"
-                name="password"
-                placeholder="Create a strong password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 placeholder-gray-500"
-              />
-            </div>
-          </div>
-
-          {/* Mobile Number */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Mobile Number (Optional)</label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                name="mobile"
-                placeholder="+91 1234567890"
-                value={formData.mobile}
-                onChange={handleChange}
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 placeholder-gray-500"
-              />
-            </div>
-          </div>
-
-          {/* Role Selection */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Register As</label>
-            <div className="relative">
-              <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-900/50 text-gray-100 appearance-none cursor-pointer"
-              >
-                <option value="">Select Role</option>
-                <option value="student">Student</option>
-                {/* <option value="admin">Admin</option> */}
-              </select>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 mt-6"
-          >
-            {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Signing up...
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-5 h-5" />
-                Create Account
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Footer Links */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-400">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-semibold text-indigo-400 hover:text-purple-400 transition-colors"
+          {!otpSent && (
+            <button
+              onClick={handleSendOtp}
+              disabled={loading}
+              className="w-full bg-indigo-600 py-3 rounded-xl"
             >
-              Login
-            </Link>
-          </p>
+              Send OTP
+            </button>
+          )}
+
+          {otpSent && !emailVerified && (
+            <>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter 6 digit OTP"
+                className="w-full py-3 px-4 rounded-xl bg-gray-900 border border-gray-600"
+              />
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleVerifyOtp}
+                  className="flex-1 bg-green-600 py-3 rounded-xl"
+                >
+                  Verify OTP
+                </button>
+                <button
+                  onClick={handleSendOtp}
+                  className="flex-1 bg-gray-700 py-3 rounded-xl"
+                >
+                  Resend
+                </button>
+              </div>
+            </>
+          )}
         </div>
+
+        {/* ---------------- REST OF FORM ---------------- */}
+        {emailVerified && (
+          <form
+            className="space-y-4 mt-6"
+            onSubmit={handleSubmit}
+          >
+            <input
+              name="name"
+              placeholder="Full Name"
+              onChange={handleChange}
+              className="w-full py-3 px-4 rounded-xl bg-gray-900"
+            />
+
+            <input
+              name="prn"
+              placeholder="PRN Number"
+              onChange={handleChange}
+              className="w-full py-3 px-4 rounded-xl bg-gray-900"
+            />
+
+            {/* PASSWORD */}
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                onChange={handleChange}
+                className="w-full pl-11 py-3 rounded-xl bg-gray-900"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
+                className="absolute right-3 top-3"
+              >
+                {showPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <input
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                placeholder="Re-enter Password"
+                value={confirmPassword}
+                onChange={(e) =>
+                  setConfirmPassword(e.target.value)
+                }
+                className="w-full pl-11 py-3 rounded-xl bg-gray-900"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    !showConfirmPassword
+                  )
+                }
+                className="absolute right-3 top-3"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            </div>
+
+            <input
+              name="mobile"
+              placeholder="Mobile (optional)"
+              onChange={handleChange}
+              className="w-full py-3 px-4 rounded-xl bg-gray-900"
+            />
+
+            <select
+              name="role"
+              onChange={handleChange}
+              className="w-full py-3 px-4 rounded-xl bg-gray-900"
+            >
+              <option value="">Select Role</option>
+              <option value="student">Student</option>
+            </select>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 py-3 rounded-xl"
+            >
+              Create Account
+            </button>
+          </form>
+        )}
+
+        <p className="text-center text-sm mt-6">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-400">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

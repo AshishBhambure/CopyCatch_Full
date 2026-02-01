@@ -1,105 +1,111 @@
-// import Student from '../models/User.js';
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
 
-// // export const signupStudent = async (req, res) => {
-// //   try {
-// //     const { name, email, password, prn, batch } = req.body;
+import Otp from "../models/Otp.js";
 
-// //     const existingEmail = await Student.findOne({ email });
-// //     if (existingEmail) return res.status(400).json({ msg: 'Email already registered' });
+import User from '../models/User.js';
+import otpGenerator from "otp-generator";
 
-// //     const existingPRN = await Student.findOne({ prn });
-// //     if (existingPRN) return res.status(400).json({ msg: 'PRN already registered' });
+export const sendOtp = async(req,res)=>{
+ 
+    try{
+       
+        const {email} =req.body;
 
-// //     // Hash password here
-// //     const salt = await bcrypt.genSalt(10);
-// //     const hashedPassword = await bcrypt.hash(password, salt);
+        console.log('email at bd ' ,req.body);
+    
+        //User Exists ? 
+        const checkUserPresent = await User.findOne({email:email});
+    
+        if(checkUserPresent){
+            return res.status(401).json({
+                success:false,
+                message:"User Already Exists",
+            })
+        }
 
-// //     const student = new Student({
-// //       name,
-// //       email,
-// //       password: hashedPassword,
-// //       prn,
-// //       batch,
-// //     });
+        var otp = otpGenerator.generate(6, {upperCaseAlphabets: false, specialChars: false,lowerCaseAlphabets:false, });
 
-// //     await student.save();
-// //     res.status(201).json({ msg: 'Student registered successfully' });
-// //   } catch (err) {
-// //     console.error(err);
-// //     res.status(500).json({ msg: 'Server error' });
-// //   }
-// // };
+        console.log("Otp Genrated -->" ,otp);
 
-// export const studentSignup = async (req, res) => {
-//   try {
-//     const { name, email, password, mobile } = req.body; // PRN and year removed
-//     if (!name || !email || !password) // only these 3 are required
-//       return res.status(400).json({ message: 'Name, email, and password are required' });
+        //check unique otp or not
+        let result = await Otp.findOne({otp});
+        while(result){
+             otp = otpGenrator.generate(6,{
+                upperCaseAlphabates:false,
+                lowerCaseAlphabates:false,
+                specialChars:false,
+                });
 
-//     const existingStudent = await User.findOne({ email, role: 'student' });
-//     if (existingStudent)
-//       return res.status(400).json({ message: 'Student already exists' });
+         result = await Otp.findOne({otp});
+        }
 
-//     const student = await User.create({
-//       name,
-//       email,
-//       password, // hashed automatically via pre-save hook
-//       mobile,
-//       role: 'student',
-//     });
+        const otpPayload = {email,otp};
+        //create an entry for otp in db
+        const otpBody = await Otp.create(otpPayload);
 
-//     const token = jwt.sign(
-//       { id: student._id, role: student.role },
-//       process.env.JWT_SECRET || 'secret_key',
-//       { expiresIn: '1d' }
-//     );
+        res.status(200).json({
+            success:true,
+            message:"Otp Created SuccesFully !",
+            otp,
+        })
 
-//     res
-//       .status(201)
-//       .json({ message: 'Student created', token, studentId: student._id });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
+    }
+    catch(e){
+        console.log(" Errror In Otp Genration Function --> ",e);
+        res.status(500).json({
+            success:false,
+            message:e.message,
+        })
+    }
 
-// export const studentLogin = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     console.log(req.body);
-//     // Check if email and password are provided
-//     if (!email || !password) {
-//       return res.status(400).json({ msg: "Email and password required" });
-//     }
+};
 
-//     // Find student by email and role
-//     const student = await User.findOne({ email, role: "student" });
-//     if (!student) return res.status(400).json({ msg: "Invalid credentials" });
+export const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
 
-//     // Compare password
-//     const isMatch = await bcrypt.compare(password, student.password);
-//     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+    console.log("Verify OTP req body ->", req.body);
 
-//     // Create JWT
-//     const token = jwt.sign(
-//       { id: student._id, role: "student" },
-//       process.env.JWT_SECRET || "secret_key",
-//       { expiresIn: "7d" }
-//     );
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
 
-//     res.json({
-//       token,
-//       student: {
-//         id: student._id,
-//         name: student.name,
-//         email: student.email,
-//         prn: student.prn,
-//       },
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ msg: "Server error" });
-//   }
-// };
+    // Find OTP entry for this email
+    const otpRecord = await Otp
+  .findOne({ email })
+  .sort({ createdAt: -1 }); 
+
+    if (!otpRecord) {
+      return res.status(404).json({
+        success: false,
+        message: "OTP not found or expired",
+      });
+    }
+
+    // Compare OTP
+    if (otpRecord.otp !== otp) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    // OTP verified successfully
+    // (optional but recommended) delete OTP after success
+    await Otp.deleteMany({ email });
+
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (e) {
+    console.log("Error in verifyOtp -> ", e);
+    return res.status(500).json({
+      success: false,
+      message: e.message,
+    });
+  }
+};
 

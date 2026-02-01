@@ -95,7 +95,7 @@ export default function LoginForm() {
               <input
                 type="email"
                 name="email"
-                placeholder="your.email@college.edu"
+                placeholder="firstname.lastname@walchandsangli.ac.in"
                 value={formData.email}
                 onChange={handleChange}
                 required
