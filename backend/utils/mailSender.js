@@ -40,67 +40,67 @@
 
 // // module.exports = mailSender;
 
-// import nodemailer from "nodemailer";
-// import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
-// dotenv.config();
-// export const mailSender = async (email, title, body) => {
-//   try {
-//     console.log("MAIL_USER:", process.env.MAIL_USER);
-//     console.log("MAIL_PASS:", process.env.MAIL_PASS ? "Loaded" : "Missing");
-
-//     const transporter = nodemailer.createTransport({
-//       host: "smtp.gmail.com",
-//       port: 465,
-//       secure: true, // REQUIRED for 465
-//       auth: {
-//         user: process.env.MAIL_USER,
-//         pass: process.env.MAIL_PASS,
-//       },
-//       connectionTimeout: 10000, // 10 sec
-//     });
-
-//     // ✅ Verify connection (VERY IMPORTANT on Render)
-//     await transporter.verify();
-//     console.log("SMTP server is ready to send emails");
-
-//     const info = await transporter.sendMail({
-//       from: `"CopyCatch Support" <${process.env.MAIL_USER}>`,
-//       to: email,
-//       subject: title,
-//       html: `
-//         <div style="font-family: Arial, sans-serif">
-//           <h2>OTP for Verification</h2>
-//           <p>Your OTP is:</p>
-//           <h1>${body}</h1>
-//           <p>This OTP is valid for 5 minutes.</p>
-//         </div>
-//       `,
-//     });
-
-//     console.log("Email sent successfully:", info.messageId);
-//     return info;
-
-//   } catch (error) {
-//     console.error("Email sending failed:", error);
-//     throw new Error("Failed to send email");
-//   }
-// };
-
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+dotenv.config();
 export const mailSender = async (email, title, body) => {
-    console.log(process.env.RESEND_API_KEY);
-  return await resend.emails.send({
-    from: "CopyCatch <onboarding@resend.dev>",
-    to: email,
-    subject: title,
-    html: `
-      <h2>OTP Verification</h2>
-      <h1>${body}</h1>
-    `,
-  });
+  try {
+    console.log("MAIL_USER:", process.env.MAIL_USER);
+    console.log("MAIL_PASS:", process.env.MAIL_PASS ? "Loaded" : "Missing");
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // REQUIRED for 465
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+      connectionTimeout: 10000, // 10 sec
+    });
+
+    // ✅ Verify connection (VERY IMPORTANT on Render)
+    await transporter.verify();
+    console.log("SMTP server is ready to send emails");
+
+    const info = await transporter.sendMail({
+      from: `"CopyCatch Support" <${process.env.MAIL_USER}>`,
+      to: email,
+      subject: title,
+      html: `
+        <div style="font-family: Arial, sans-serif">
+          <h2>OTP for Verification</h2>
+          <p>Your OTP is:</p>
+          <h1>${body}</h1>
+          <p>This OTP is valid for 5 minutes.</p>
+        </div>
+      `,
+    });
+
+    console.log("Email sent successfully:", info.messageId);
+    return info;
+
+  } catch (error) {
+    console.error("Email sending failed:", error);
+    throw new Error("Failed to send email");
+  }
 };
+
+// import { Resend } from "resend";
+
+// const resend = new Resend(process.env.RESEND_API_KEY);
+
+// export const mailSender = async (email, title, body) => {
+//     console.log(process.env.RESEND_API_KEY);
+//   return await resend.emails.send({
+//     from: "CopyCatch <onboarding@resend.dev>",
+//     to: email,
+//     subject: title,
+//     html: `
+//       <h2>OTP Verification</h2>
+//       <h1>${body}</h1>
+//     `,
+//   });
+// };
 
