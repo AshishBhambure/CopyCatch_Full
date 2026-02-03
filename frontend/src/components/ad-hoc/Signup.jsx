@@ -47,6 +47,7 @@ export default function SignupForm() {
       setMessage(
         "Email must be firstname.lastname@walchandsangli.ac.in"
       );
+      toast.warn("Email must be firstname.lastname@walchandsangli.ac.in");
       return;
     }
 
@@ -70,7 +71,6 @@ export default function SignupForm() {
     }
   };
 
-  /* ---------------- VERIFY OTP ---------------- */
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       toast.warn("OTP must be 6 digits");
@@ -99,7 +99,6 @@ export default function SignupForm() {
     }
   };
 
-  /* ---------------- SIGNUP ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -141,8 +140,7 @@ export default function SignupForm() {
           </h2>
         </div>
 
-        {/* ---------------- EMAIL SECTION ---------------- */}
-        <div className="space-y-4">
+        <div className="space-y-4  flex flex-col gap-y-2">
           <div>
             <label className="pl-2 font-semibold">
               College Email
