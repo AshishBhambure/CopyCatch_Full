@@ -15,6 +15,7 @@ import StudentDashboard from './components/student/StudentDashboard';
 import CheckSimilarDocuments from './components/teacher/checkSimilarDocuments';
 import CompareSimilarity from './components/teacher/CompareSimilarity';
 import AdminDashboard from './components/admin/AdminDashboard';
+import ForgotPassword from './components/ad-hoc/ForgotPassword';
 
 function App() {
   return (
@@ -46,6 +47,11 @@ function App() {
           element={<CompareSimilarity />}
         />
         <Route path='/admin-dashboard' element={<AdminDashboard/>} />
+        
+        <Route
+         path='/forgot-pass'
+         element={<ForgotPassword/>}
+        ></Route>
     </Routes>
   );
 }

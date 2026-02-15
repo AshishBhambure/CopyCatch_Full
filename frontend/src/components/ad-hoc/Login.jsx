@@ -15,6 +15,10 @@ export default function LoginForm() {
   const handleChange = (e) => 
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  async function handleForgotPass(){
+
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -171,6 +175,12 @@ export default function LoginForm() {
               Sign up
             </Link>
           </p>
+          <Link
+           to="/forgot-pass"
+           className="font-semibold text-indigo-400 hover:text-purple-400 transition-colors underline pt-4"
+          >
+            Forgot Password
+          </Link>
         </div>
       </div>
     </div>

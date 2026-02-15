@@ -7,7 +7,10 @@ const TeacherNavbar = ({ student }) => {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
+      localStorage.clear();
+      // TODO ::  LoCalStiorage Not Fliushing Entirely Chcek 
+      // localStorage.removeItem("userId");
+      // localStorage.removeItem("role");
       navigate("/");
     }
   };

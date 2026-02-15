@@ -1,8 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Shield, Zap, Users, CheckCircle } from "lucide-react";
 import Footer from "./Footer";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [role,setRole] = useState("");
+
+  useEffect(()=>{
+    const userId = localStorage.getItem("userId");
+    if(userId != null)
+    {
+      setIsUserLoggedIn(true);
+    }
+
+    const role = localStorage.getItem("role");
+
+    if(role != null)
+    {
+      setRole(role);
+    }
+  },[]);
+
+  function handleLogout(){
+    localStorage.clear();
+    setIsUserLoggedIn(false);
+  }
+
+  const dashboard_mapping = 
+  [
+    {
+      role:"student",
+      path:"student-dashboard"
+    },
+    {
+      role:"teacher",
+      path:"/teacher-subjects"
+    },
+    {
+      role:"admin",
+      path:"/admin-dashboard"
+    }
+  ]
+
+  function getPath(role) {
+  const mapping = dashboard_mapping.find(m => m.role === role);
+  return mapping?.path || "/";
+}
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
@@ -16,20 +63,43 @@ export default function Home() {
               CopyCatch
             </span>
           </div>
-          <div className="flex gap-3">
-            <Link 
-              to="/login" 
-              className="px-5 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-white/80 transition-all duration-200"
-            >
-              Login
-            </Link>
-            <Link 
-              to="/signup" 
-              className="px-5 py-2.5 rounded-xl font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:scale-105 transition-all duration-200"
-            >
-              Sign Up
-            </Link>
-          </div>
+          {isUserLoggedIn ? (
+        <div className=" flex flex-row gap-x-2">
+          {/* Dashboard Button */}
+          <Link
+            to={getPath(role)}
+            className="px-5 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-white/80 transition-all duration-200"
+          >
+            Dashboard
+          </Link>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="px-5 py-2.5 rounded-xl font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg hover:scale-105 transition-all duration-200"
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div  className=" flex flex-row gap-x-2">
+          {/* Login */}
+          <Link
+            to="/login"
+            className="px-5 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-white/80 transition-all duration-200"
+          >
+            Login
+          </Link>
+
+          {/* Signup */}
+          <Link
+            to="/signup"
+            className="px-5 py-2.5 rounded-xl font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:scale-105 transition-all duration-200"
+          >
+            Sign Up
+          </Link>
+        </div>
+      )}
         </div>
       </header>
 

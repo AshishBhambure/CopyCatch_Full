@@ -371,18 +371,19 @@ export default function AssignmentDetails() {
               </a>
 
               <div className="mt-6 flex gap-3">
-                <button
+                <div className=" text-sm text-red-400"> <span className=" text-red text-sm"> * </span>Right Now we are Accepting Single Submission Only !! So You are Not allowed to Update & Delete current Submission</div>
+                {/* <button
                   onClick={() => setShowUpdateModal(true)}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl transition transform hover:scale-105"
                 >
                   Update Submission
-                </button>
-                <button
+                </button> */}
+                {/* <button
                   onClick={() => setShowDeleteModal(true)}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition transform hover:scale-105"
                 >
                   Delete Submission
-                </button>
+                </button> */} 
               </div>
             </>
           ) : (

@@ -7,7 +7,7 @@ const StudentNavbar = ({ student }) => {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
+      localStorage.clear();
       navigate("/");
     }
   };

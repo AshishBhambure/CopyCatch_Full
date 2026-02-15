@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Submission from '../models/Submission.js';
 import { pythonBackendUrl } from '../pythonBackendUrl.js';
+import Assignment from '../models/Assignment.js';
 
 // Assignment submission by student
 export const createSubmission = async (req, res) => {
@@ -24,6 +25,10 @@ export const createSubmission = async (req, res) => {
     let submission_id = newSub._id;
     let assignment_id = newSub.assignmentId;
 
+    const assignment = await Assignment.findById(assignmentId);
+
+    const minMatchLength = assignment?.minMatchLength;
+
 
 
     // ======================HARDCODED ALERT ===============================================================
@@ -41,7 +46,8 @@ export const createSubmission = async (req, res) => {
   {
     file_url: file_url,
     submission_id: submission_id,
-    assignment_id: assignment_id
+    assignment_id: assignment_id,
+    minMatchLength:minMatchLength,
   },
   {
     headers: {
