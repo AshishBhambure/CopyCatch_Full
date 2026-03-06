@@ -46,11 +46,12 @@ const CheckPlagiarism = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="text-center py-16 px-6">
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+      <section className="text-center py-20 px-6">
+        <h1 className="text-4xl md:text-5xl font-bold leading-relaxed bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6 pb-4">
           Check Plagiarism - {subject?.subjectName || ""}
         </h1>
-        <p className="text-gray-400 text-lg md:text-xl mt-5 py-5">
+
+        <p className="text-gray-400 text-base md:text-lg mt-2">
           View assignments for this subject and analyze plagiarism easily.
         </p>
       </section>

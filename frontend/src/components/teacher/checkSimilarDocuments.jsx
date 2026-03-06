@@ -85,7 +85,7 @@ const CheckSimilarDocuments = () => {
           >
             ← Back
           </button>
-          <h1 className="text-5xl font-bold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent pb-4">
             Similar Documents Analysis
           </h1>
 

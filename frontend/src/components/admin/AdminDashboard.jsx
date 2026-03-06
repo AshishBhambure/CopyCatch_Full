@@ -121,15 +121,22 @@ const AdminDashboard = () => {
       }
     }
   };
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-gray-800/70 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex  justify-between items-center">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Admin Dashboard
           </h1>
+          <button onClick={handleLogout} className="bg-gradient-to-r from-red-500 to-red-600 hover:shadow-xl hover:scale-105 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-200">
+            Logout
+          </button>
         </div>
       </header>
 
