@@ -43,7 +43,7 @@ const TeacherSubjects = () => {
   }, []);
     const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
+      localStorage.clear();
       navigate("/");
     }
   };
@@ -78,7 +78,7 @@ const TeacherSubjects = () => {
           👋 Hi, {teacher?.name}! Welcome back.
         </p>
 
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent pb-4">
           Your Subjects
         </h1>
         <p className="text-gray-400 mt-4">

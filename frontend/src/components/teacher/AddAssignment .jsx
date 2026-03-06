@@ -15,6 +15,7 @@ const AddAssignment = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState(null);
   const [subject, setSubject] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [assignmentForm, setAssignmentForm] = useState({
@@ -75,15 +76,18 @@ const AddAssignment = () => {
   const handleSaveAssignment = async () => {
     try {
       if (editingAssignment) {
+        setLoading(true);
         const updated = await updateAssignment(editingAssignment._id, assignmentForm);
         setAssignments(
           assignments.map((a) => (a._id === editingAssignment._id ? updated : a))
         );
+        setLoading(false);
       } else {
+        setLoading(true);
         const created = await createAssignment(assignmentForm);
         setAssignments([...assignments, created]);
         window.location.reload();
-
+        setLoading(false);
       }
       setIsModalOpen(false);
       setEditingAssignment(null);
@@ -108,7 +112,7 @@ const AddAssignment = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col relative">
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-gray-900/80 shadow-md rounded-b-2xl mb-8">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -138,7 +142,7 @@ const AddAssignment = () => {
           Upload your first assignment now!
         </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {assignments.map((a) => (
             <div
               key={a._id}
@@ -217,13 +221,16 @@ const AddAssignment = () => {
                 onClick={handleSaveAssignment}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-2xl shadow-md hover:scale-105 hover:shadow-xl transition duration-300"
               >
-                {editingAssignment ? "Update Assignment" : "Add Assignment"}
+                {loading ? "Loading..." : editingAssignment ? "Update Assignment" : "Add Assignment"}
               </button>
             </div>
           </div>
         </div>
       )}
-      <Footer />
+      <div className="fixed bottom-0 left-0 w-full z-50 backdrop-blur-md bg-gray-900/80 shadow-md rounded-t-2xl">
+        <Footer />
+      </div>
+
     </div>
   );
 };

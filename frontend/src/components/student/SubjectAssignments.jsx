@@ -35,7 +35,7 @@ const SubjectAssignments = () => {
         </button>
 
         {/* Heading - Center */}
-        <h1 className="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 flex-1">
+        <h1 className="text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 flex-1 p-4">
           📄 Assignments
         </h1>
 
