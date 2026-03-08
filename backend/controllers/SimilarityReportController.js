@@ -70,13 +70,18 @@ export const getSimilarityReportBySubmission = async (req, res) => {
     }
 
     // 2) Enrich each doc with student name from Mongo
+    // We Should Also Enrich Document With Version Over Here (As we are Allowing Multiple Submissions From Same Student)
+    // Also Return PRN
     const enriched = await Promise.all(
       report.plagarized_with.map(async (item) => {
         const sub = await Submission.findById(item.submission_id)
-          .populate("studentId", "name"); // only return name
+          .populate("studentId", "name prn"); // only return name
         return {
           ...item,
-          studentName: sub?.studentId?.name || "Unknown"
+          studentName: sub?.studentId?.name || "Unknown",
+          studentPRN:sub?.studentId?.prn || "Unknown",
+          version: sub?.version || "1",
+          submittedAt:sub.updatedAt || sub.createdAt
         };
       })
     );
@@ -140,6 +145,7 @@ export const getSimilarityReportBySubmission = async (req, res) => {
 
 
 import Assignment from "../models/Assignment.js";
+import { version } from "mongoose";
 
 export const getSimilarityReport = async (req, res) => {
   try {

@@ -129,7 +129,7 @@ export const getSubmissionByAssignmentAndStudent = async (req, res) => {
     const { assignmentId } = req.params;
     const studentId = req.user._id;
 
-    const submission = await Submission.findOne({ assignmentId, studentId });
+    const submission = await Submission.find({ assignmentId, studentId }); // Return All Submissions
     console.log(assignmentId, studentId);
 
     console.log("Fetched submission:", submission);
@@ -145,7 +145,7 @@ export const getSubmissionByAssignmentAndStudent = async (req, res) => {
 export const getSubmissionsByAssignment = async (req, res) => {
     try {
         const submissions = await Submission.find({ assignmentId: req.params.assignmentId })
-            .populate('studentId', 'name email');
+            .populate('studentId', 'name email prn');
         res.status(200).json(submissions);
     } catch (error) {
         res.status(500).json({ error: error.message });

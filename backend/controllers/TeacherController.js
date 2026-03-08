@@ -49,7 +49,7 @@ export const getSubjectsByTeacher = async (req, res) => {
 export const getSubmissionsByAssignment = async (req, res) => {
   try {
     const submissions = await Submission.find({ assignmentId: req.params.assignmentId })
-                .populate('studentId', 'name email');
+                .populate('studentId', 'name email prn');
             res.status(200).json(submissions);
   } catch(err){ res.status(500).json({ error: err.message }); }
 };
