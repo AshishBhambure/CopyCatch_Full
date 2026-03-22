@@ -60,7 +60,8 @@ export const getSimilarityReportBySubmission = async (req, res) => {
 
     // 1) CALL PYTHON BACKEND
     console.log("Call IN Python Backend For Fetching Similarity Report ")
-    const pythonBackendUrl = "https://copycatch-py-backend.onrender.com/get_similarity_report";
+    const url = pythonUri;
+    const pythonBackendUrl = `${url}/get_similarity_report`;
     const response = await axios.get(`${pythonBackendUrl}/${submissionId}`,{timeout:120000});
     console.log(" Return From Python Backend ");
 
@@ -146,13 +147,14 @@ export const getSimilarityReportBySubmission = async (req, res) => {
 
 import Assignment from "../models/Assignment.js";
 import { version } from "mongoose";
+import { pythonUri } from "../pythonBackendUrl.js";
 
 export const getSimilarityReport = async (req, res) => {
   try {
     const { submissionId } = req.params;
 
     // 🔹 1. Call Python FastAPI to get similarity report
-    const pythonUrl = `https://copycatch-py-backend.onrender.com/get_similarity_report/${submissionId}`;
+    const pythonUrl = `${pythonUri}/get_similarity_report/${submissionId}`;
     const { data: report } = await axios.get(pythonUrl);
 
     if (!report) {

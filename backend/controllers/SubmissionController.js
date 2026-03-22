@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Submission from '../models/Submission.js';
-import { pythonBackendUrl } from '../pythonBackendUrl.js';
+import { pythonBackendUrl, pythonUri } from '../pythonBackendUrl.js';
 import Assignment from '../models/Assignment.js';
 
 // Assignment submission by student
@@ -41,8 +41,9 @@ export const createSubmission = async (req, res) => {
     //     assignment_id: assignment_id
     //   }
     // });
+    const url = pythonUri;
     const response = await axios.post(
-  'https://copycatch-py-backend.onrender.com/upload',
+  `${url}/upload`,
   {
     file_url: file_url,
     submission_id: submission_id,

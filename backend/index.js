@@ -43,4 +43,4 @@ app.get('/', (req,res) => res.send('CopyCatch backend is up'));
 app.head('/',(req,res)=> res.send("Copycatch Node Backend is up"));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, ()=> console.log(`Server started on ${PORT}`));
+app.listen(PORT,"0.0.0.0", ()=> console.log(`Server started on ${PORT}`));

@@ -20,8 +20,9 @@ const otpSchema = new mongoose.Schema({
    },
 
 });
-
+/*
 async function sendVerificationEmail(email, otp) {
+  
    const URL_FOR_SEND_OTP = process.env.URL_FOR_SEND_OTP;
    try {
       console.log("Seding Email and Trying to reach GCP !!");
@@ -101,6 +102,68 @@ async function sendVerificationEmail(email, otp) {
       console.log("Error in otp module While Sending The MAil -- > ", e)
    }
 
+}*/ 
+
+async function sendVerificationEmail(email, otp) {
+   try {
+      console.log("Sending Email via Nodemailer (LOCAL SMTP)");
+
+      const emailResponse = await mailSender(
+         email,
+         "Verification Email from CopyCatch",
+         `
+         <!DOCTYPE html>
+         <html>
+         <head>
+           <meta charset="UTF-8" />
+           <title>OTP Verification</title>
+         </head>
+         <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, sans-serif;">
+
+           <table width="100%" cellpadding="0" cellspacing="0">
+             <tr>
+               <td align="center" style="padding:30px;">
+                 <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; padding:30px;">
+                   
+                   <tr>
+                     <td align="center">
+                       <h2>Email Verification</h2>
+                       <p>Use the OTP below to verify your email on <strong>CopyCatch</strong>.</p>
+                     </td>
+                   </tr>
+
+                   <tr>
+                     <td align="center" style="padding:20px 0;">
+                       <div style="font-size:28px; font-weight:bold; letter-spacing:6px;">
+                         ${otp}
+                       </div>
+                     </td>
+                   </tr>
+
+                   <tr>
+                     <td align="center">
+                       <p style="font-size:12px;">
+                         This OTP is valid for 10 minutes.
+                       </p>
+                     </td>
+                   </tr>
+
+                 </table>
+               </td>
+             </tr>
+           </table>
+
+         </body>
+         </html>
+         `
+      );
+
+      console.log("Email sent successfully:", emailResponse.messageId);
+
+   } catch (e) {
+      console.log("Error in OTP mail sending -->", e);
+      throw e; // IMPORTANT (so save fails if mail fails)
+   }
 }
 
 otpSchema.pre("save", async function (next) {

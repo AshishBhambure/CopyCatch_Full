@@ -1,45 +1,3 @@
-// import nodemailer from "nodemailer";
-// import dotenv from "dotenv";
-
-// dotenv.config();
-// export const mailSender = async (email,title,body)=>{    
-// try{
-//     // require('dotenv').config();
-//     console.log("Host : ",process.env.MAIL_HOST,)
-//     console.log("User Form Env :: ",process.env.MAIL_USER);
-//     console.log("Pass : ", process.env.MAIL_PASS);
-//     let transporter = nodemailer.createTransport({
-//         host: "smtp.gmail.com",
-//       port: 465,
-//       secure: true, 
-//       auth: {
-//         user: process.env.MAIL_USER,
-//         pass: process.env.MAIL_PASS,
-//       },
-//       connectionTimeout: 10000,
-//     })
-
-//     let info = await transporter.sendMail(
-//         {
-//             from:'Copycatch-Support' ,
-//             to:email ,
-//             subject:title ,
-//             html:`
-//             <h1> Otp for Verification </h1>
-//             <h2>  ${body} </h2>
-//             ` 
-//         }
-//     )
-//     console.log(" Mail Info-->" , info);
-//     return info;
-// }
-// catch(e){
-//     console.log(e);
-// }
-// }
-
-// // module.exports = mailSender;
-
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
@@ -86,21 +44,4 @@ export const mailSender = async (email, title, body) => {
     throw new Error("Failed to send email");
   }
 };
-
-// import { Resend } from "resend";
-
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-// export const mailSender = async (email, title, body) => {
-//     console.log(process.env.RESEND_API_KEY);
-//   return await resend.emails.send({
-//     from: "CopyCatch <onboarding@resend.dev>",
-//     to: email,
-//     subject: title,
-//     html: `
-//       <h2>OTP Verification</h2>
-//       <h1>${body}</h1>
-//     `,
-//   });
-// };
 
